@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Course Information</title>
+  <meta charset="utf-8">
+  
+  <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/style.css">
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="styles/jquery-ui.css">
+  <script src="scripts/jquery-1.10.2.js"></script>
+  <script src="scripts/jquery-ui.js"></script>
+  
+  <script>
+  $(function() {
+    var availableTags = [
+      "",
+      ""
+    ];
+    
+    $.ajax({
+            url: 'values.txt',
+            type: 'GET',
+            data: {},
+            async: true, //blocks window close
+            success : function(data) {
+				availableTags = data.split('\n');
+				$( "#course" ).autocomplete({
+					source: availableTags,
+					autoFocus: true
+				});
+			}
+        });
+  });
+  </script>
+  
+</head>
+<body>
+
+<div class="container" style="height: 100%; margin-top: 5%;">
+  <h2 align="center">Course Information</h2>
+  <p class="text-muted" align="center">An effort to avoid frustrating OARS by: <a href="https://www.facebook.com/prashant.chawla.56">Prashant Chawla</a> | <a href="https://www.facebook.com/deepakiitk1010">Deepak Kumar</a> </p>
+  <br>
+  <br>
+  <p align="center">2015-16 SEM II</p>
+  <form style="margin-top: 8%;">
+    <div class="form-group" style="width: 60%; margin-left: 20%;">
+      <label for="Course">Course Number:</label>
+      <input type="text" class="form-control" id="course" placeholder="Enter Course Number or Name">
+    </div>
+	
+	<div align="center">
+		<button class="btn btn-default" id="getinfobutton">Submit</button>
+	</div>
+  </form>
+</div>
+
+
+<script>
+
+	$("#getinfobutton").click(function(event){
+		event.preventDefault();
+		localStorage.setItem('course', document.getElementById('course').value.split(' : ')[0]);
+		window.location.assign("info.html");
+	});
+
+</script>
+
+<div style="	position: absolute; right: 0px; bottom: 0px;">
+	<!-- hitwebcounter Code START -->
+	<a href="http://www.hitwebcounter.com" target="_blank">
+	<img src="http://hitwebcounter.com/counter/counter.php?page=6213485&style=0024&nbdigits=5&type=page&initCount=0" title="www.hitwebcounter.com" Alt="www.hitwebcounter.com"   border="0" >
+	</a>                                        <br/>
+											<!-- hitwebcounter.com --><a href="http://www.hitwebcounter.com" title="This Website Visits" 
+											target="_blank" style="font-family: Geneva, Arial, Helvetica; 
+											font-size: 9px; color: #76766B; text-decoration: none ;"><strong>This Website Visits                                        </strong>
+											</a>   
+</div>
+</body>
+</html>

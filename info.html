@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Course Information</title>
+  <meta charset="utf-8">
+  
+  <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/style.css">
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="styles/jquery-ui.css">
+  <script src="scripts/jquery-1.10.2.js"></script>
+  <script src="scripts/jquery-ui.js"></script>
+  <script src="scripts/jquery.csvToTable.js"></script>
+  
+  <script>
+  	function genUserFriendlyCourseStatus(status)
+	{
+		var stat=new String(status);
+		var answer;
+		if (stat.valueOf()=="A")
+			answer="Auto-Accept";
+		else if (stat.valueOf()=="R")
+			answer="Auto-Deny";
+		else
+			answer="Request";
+		return(answer);
+	}
+	</script>
+  
+</head>
+<body>
+
+<div class="container" id="currinfo" style="height: 100%; margin-top: 2%; margin-bottom: 2%; padding-left: 20%;"></div>
+<div class="container" style="width: 100%"><label for="Table"  style="padding-left: 20%;">Previous Year Offerings (After 2012)</label></div>
+<br>
+<div class="container" id="prevcourses" ></div>
+<br>
+<br>
+<div align="center" >
+	<button class="btn btn-success btn-lg" id="anothercoursebutton">Check Another Course</button>
+</div>
+
+<script>
+
+$("#anothercoursebutton").click(function(){
+	window.location.assign("index.html");
+});
+
+$(".studentlist").click(function(){
+    console.log("The paragraph was clicked.");
+});
+
+$(function() {
+	 $.ajax({
+            url: 'getinfo.php?c='+localStorage.getItem('course'),
+            type: 'GET',
+            data: {},
+            async: true, //blocks window close
+            success : function(data) {
+				$("#currinfo").html(data);
+			}
+        });
+	});
+
+$('#prevcourses').CSVToTable('gettsv.php?c='+localStorage.getItem('course'),
+	{ 	loadingText: 'Loading Data...',
+		loadingImage: 'loading.gif', 
+		startLine: 0, 
+		separator: "\t",
+		tableClass: 'table table-condensed' 
+	}).bind("loadComplete",function() { 
+       $("#prevcourses table tr td:nth-child(1)").each(function(){ $(this).addClass("year") });
+	   $("#prevcourses table tr td:nth-child(2)").each(function(){ $(this).addClass("sem") });
+	   $("#prevcourses table tr td:nth-child(3)").each(function(){ $(this).addClass("course") });
+	   $("#prevcourses table tbody tr").each(function(){ 
+		   
+		   var $last = $("td:last-child",this).html();
+		   var $acadyr = $("td:nth-child(1)",this).html();
+		   var $acadsem = $("td:nth-child(2)",this).html();
+		   var $coursenum = $("td:nth-child(3)",this).html();
+		   
+		   if( $last=="Click for details" )
+		   {
+			   $("td:last-child",this).html('<a href="list.html" class="studentlist">List of Students</a>');
+		   }    
+		 });
+   });
+
+
+$(document).on("click", ".studentlist", function(e){
+
+		localStorage.setItem('course', $(this).closest("td").siblings().eq(2).html() );
+		localStorage.setItem('year', $(this).closest("td").siblings().eq(0).html() );
+		localStorage.setItem('sem', $(this).closest("td").siblings().eq(1).html() );
+		
+});
+
+</script>
+
+</body>
+</html>
